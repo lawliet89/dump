@@ -10,12 +10,14 @@ namespace Dump.Tasks
         /// <typeparam name="TResult">Specifies the type of the result.</typeparam>
         /// <param name="resultSetter">The TaskCompletionSource.</param>
         /// <param name="task">The task whose completion results should be transferred.</param>
-        /// https://github.com/openstacknetsdk/openstack.net/blob/master/src/corelib/Core/ParallelExtensionsExtras/TaskCompletionSourceExtensions.cs
+        /// Copyright (c) Microsoft Corporation.  All rights reserved. 
         public static void SetFromTask<TResult>(this TaskCompletionSource<TResult> resultSetter, Task task)
         {
             switch (task.Status)
             {
-                case TaskStatus.RanToCompletion: resultSetter.SetResult(task is Task<TResult> ? ((Task<TResult>)task).Result : default(TResult)); break;
+                case TaskStatus.RanToCompletion:
+                    var taskResult = task as Task<TResult>;
+                    resultSetter.SetResult(taskResult != null ? taskResult.Result : default(TResult)); break;
                 case TaskStatus.Faulted: resultSetter.SetException(task.Exception.InnerExceptions); break;
                 case TaskStatus.Canceled: resultSetter.SetCanceled(); break;
                 default: throw new InvalidOperationException("The task was not completed.");
@@ -26,6 +28,7 @@ namespace Dump.Tasks
         /// <typeparam name="TResult">Specifies the type of the result.</typeparam>
         /// <param name="resultSetter">The TaskCompletionSource.</param>
         /// <param name="task">The task whose completion results should be transferred.</param>
+        /// Copyright (c) Microsoft Corporation.  All rights reserved. 
         public static void SetFromTask<TResult>(this TaskCompletionSource<TResult> resultSetter, Task<TResult> task)
         {
             SetFromTask(resultSetter, (Task)task);
@@ -55,10 +58,10 @@ namespace Dump.Tasks
         public static Task Then<TSource>(this Task<TSource> task,
             Action<Task<TSource>> continuationFunction)
         {
-            return task.Then((t) =>
+            return task.Then(t =>
             {
                 continuationFunction(t);
-                return new VoidResult();
+                return Nothing.AtAll;
             });
         }
 
@@ -67,7 +70,7 @@ namespace Dump.Tasks
             return StartSTATask(() =>
             {
                 action();
-                return new VoidResult();
+                return Nothing.AtAll;
             });
         }
 
@@ -91,6 +94,16 @@ namespace Dump.Tasks
         }
     }
 
-    public sealed class VoidResult { }
-
+    /// <summary>
+    /// Unit class. Alternatively, you can use System.Reactive.Unit
+    /// </summary>
+    public sealed class Nothing
+    {
+        private Nothing() { }
+        private readonly static Nothing atAll = new Nothing();
+        public static Nothing AtAll
+        {
+            get { return atAll; }
+        }
+    }
 }
