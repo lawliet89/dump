@@ -61,17 +61,19 @@ namespace Dump.Tasks
             var completionSource = new TaskCompletionSource<TResult>();
 
             // If task was successful
-            task.ContinueWith(continuationFunction, TaskContinuationOptions.OnlyOnRanToCompletion)
+            task.ContinueWith(continuationFunction, CancellationToken.None, 
+                TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default)
                 .ContinueWith(t =>
                 {
                     if (task.Status == TaskStatus.RanToCompletion)
                     {
                         completionSource.SetFromTask(t);
                     }
-                });
+                }, TaskScheduler.Default);
 
             // If task was unsuccessful
-            task.ContinueWith(t => completionSource.SetFromTask(t), TaskContinuationOptions.NotOnRanToCompletion);
+            task.ContinueWith(t => completionSource.SetFromTask(t), CancellationToken.None,
+                TaskContinuationOptions.NotOnRanToCompletion, TaskScheduler.Default);
 
             return completionSource.Task;
         }
