@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace BinarySearchTree.Tests
 {
     [TestFixture(typeof(int), new[] { 5, 6, 3, 2, 4, 7, 13, 9, 18, 17, 20 })]
+    [TestFixture(typeof(int), new[] { 94, 10, 5, 24, 11, 17, 97 })]
     public class NodeTests<T> where T : IComparable
     {
         private readonly T[] values;
