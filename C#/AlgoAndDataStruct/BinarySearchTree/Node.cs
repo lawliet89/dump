@@ -102,7 +102,22 @@ namespace BinarySearchTree
                     yield return node;
                 }
             }
-        } 
+        }
+
+        public Node<T> FindNode(T value)
+        {
+            if (Value.Equals(value))
+                return this;
+            if (value.CompareTo(Value) <= 0 && LeftChild != null)
+            {
+                return LeftChild.FindNode(value);
+            }
+            if (value.CompareTo(Value) > 0 && RightChild != null)
+            {
+                return RightChild.FindNode(value);
+            }
+            return null;
+        }
 
         public override string ToString()
         {

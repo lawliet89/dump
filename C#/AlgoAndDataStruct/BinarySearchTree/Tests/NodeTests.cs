@@ -41,6 +41,14 @@ namespace BinarySearchTree.Tests
             Assert.That(values.OrderBy(n => n).SequenceEqual(root.Walk()));
         }
 
+        [Test]
+        public void CanFindNodes()
+        {
+            var randomValue = values.Skip(new Random().Next(0, values.Count() - 1))
+                .First();
+            Assert.IsNotNull(root.FindNode(randomValue));
+        }
+
         public static bool BinaryTreePropertyRespected(Node<T> root, T minimumValue = default(T),
             T maximumValue = default(T)) 
         {
