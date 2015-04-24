@@ -119,6 +119,45 @@ namespace BinarySearchTree
             return null;
         }
 
+        public T Successor(T value)
+        {
+            var node = SuccessorNode(value);
+            return node != null ? node.Value : default(T);
+        }
+
+        public Node<T> SuccessorNode(T value)
+        {
+            var node = FindNode(value);
+            if (node != null) return node.SuccessorNode();
+            throw new ArgumentException("Value cannot be found in tree.");
+        } 
+
+        public T Successor()
+        {
+            var successorNode = SuccessorNode();
+            return successorNode != null ? successorNode.Value : default(T);
+        }
+
+        public Node<T> SuccessorNode()
+        {
+            if (RightChild != null)
+            {
+                return RightChild.MinimumNode();
+            }
+
+            // Otherwise, the successor is a node that is the lowest ancestor of this 
+            // and has a left child that is also an ancestor of this
+            var x = this;
+            var y = Parent;
+            // Keep going up as long as x is the right child of y
+            while (y != null && y.RightChild == x)
+            {
+                x = y;
+                y = y.Parent;
+            }
+            return y;
+        }
+
         public override string ToString()
         {
             return Value.ToString();

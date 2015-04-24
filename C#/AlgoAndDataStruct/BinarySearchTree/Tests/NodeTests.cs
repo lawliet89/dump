@@ -49,6 +49,16 @@ namespace BinarySearchTree.Tests
             Assert.IsNotNull(root.FindNode(randomValue));
         }
 
+        [Test]
+        public void SuccessorsAreReturnedCorrectly()
+        {
+            var sortedValues = values.OrderBy(x => x).ToArray();
+            for (var i = 0; i < sortedValues.Length - 1; ++i)
+            {
+                Assert.AreEqual(sortedValues[i + 1], root.Successor(sortedValues[i]));
+            }
+        }
+
         public static bool BinaryTreePropertyRespected(Node<T> root, T minimumValue = default(T),
             T maximumValue = default(T)) 
         {
