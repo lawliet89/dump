@@ -39,19 +39,11 @@ namespace BinarySearchTree
                 var expression = node.Value.CompareTo(currentNode.Value) <= 0
                     ? LeftChildExpression
                     : RightChildExpression;
-                var newNode = expression.Compile()(currentNode);
+                var newNode = expression.Value(currentNode);
                 // Bingo!
                 if (newNode == null)
                 {
-                    var selector = expression.Body as MemberExpression;
-                    if (selector != null)
-                    {
-                        var property = selector.Member as PropertyInfo;
-                        if (property != null)
-                        {
-                            property.SetValue(currentNode, node, null);
-                        }
-                    }
+                    expression.SetValue(currentNode, node);
                     node.Parent = currentNode;
                 }
                 else
