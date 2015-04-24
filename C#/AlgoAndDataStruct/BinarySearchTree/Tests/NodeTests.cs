@@ -51,12 +51,12 @@ namespace BinarySearchTree.Tests
                 result &= root.RightChild.Value.CompareTo(root.Value) >= 0;
                 result &= BinaryTreePropertyRespected(root.RightChild, root.Value, maximumValue);
             }
-
-            if (EqualityComparer<T>.Default.Equals(minimumValue, default(T)))
+            // The following lines are fragile if the node tree contains zero because default(int) is zero!
+            if (!EqualityComparer<T>.Default.Equals(minimumValue, default(T)))
             {
                 result &= root.Value.CompareTo(minimumValue) >= 0;
             }
-            if (EqualityComparer<T>.Default.Equals(maximumValue, default(T)))
+            if (!EqualityComparer<T>.Default.Equals(maximumValue, default(T)))
             {
                 result &= root.Value.CompareTo(maximumValue) <= 0;
             }
