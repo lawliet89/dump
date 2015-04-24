@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -158,6 +159,69 @@ namespace BinarySearchTree
             return y;
         }
 
+        /// <summary>
+        /// Replace this as a child of its parent with v.
+        /// Afterwards, this will be in a "dangling" state
+        /// </summary>
+        public void Transplant(Node<T> v, ref Node<T> root)
+        {
+            if (Parent == null)
+            {
+                root = v;
+            }
+            else if (Parent.LeftChild == this)
+            {
+                Parent.LeftChild = v;
+            }
+            else if (Parent.RightChild == this)
+            {
+                Parent.RightChild = v;
+            }
+            if (v != null)
+                v.Parent = Parent;
+        }
+
+        public void Delete(ref Node<T> root)
+        {
+            if (LeftChild == null)
+            {
+                Transplant(RightChild, ref root);
+            }
+            else if (RightChild == null)
+            {
+                Transplant(LeftChild, ref root);
+            }
+            else // Has two children
+            {
+                // The successor (by virtue of BST) will be in the right sub-tree
+                // and has no left-child
+                var successor = SuccessorNode();
+                Debug.Assert(successor != null);
+
+                // If successor is not a right child of this
+                if (successor.Parent != this)
+                {
+                    // Transplant successor with its right child
+                    successor.Transplant(successor.RightChild, ref root);
+                    // Make Successor's right child be this's original right child
+                    successor.RightChild = RightChild;
+                    successor.RightChild.Parent = successor;
+                }
+                // Transplant this with successor
+                Transplant(successor, ref root);
+                // Make successor's left child be this's left child
+                successor.LeftChild = LeftChild;
+                successor.LeftChild.Parent = successor;
+            }
+        }
+
+        public Node<T> Delete(T value, ref Node<T> root)
+        {
+            var node = FindNode(value);
+            if (node != null) node.Delete(ref root);
+            return node;
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -169,7 +233,7 @@ namespace BinarySearchTree
         public static Node<T> MakeTree(params T[] values)
         {
             return MakeTree(values.AsEnumerable());
-        } 
+        }
 
         public static Node<T> MakeTree(IEnumerable<T> values)
         {

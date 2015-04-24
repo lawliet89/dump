@@ -60,6 +60,19 @@ namespace BinarySearchTree.Tests
             Assert.IsNull(root.SuccessorNode(sortedValues[sortedValues.Length - 1]));
         }
 
+        [Test]
+        public void DeleteAndTransplantsAreDoneCorrectly()
+        {
+            var sortedValues = values.OrderBy(x => x).ToArray();
+            foreach (var value in sortedValues)
+            {
+                var treeValues = values.Except(value.Yield());
+                var tree = Node<T>.MakeTree(treeValues);
+                tree.Delete(value, ref tree);
+                Assert.That(sortedValues.Except(value.Yield()).SequenceEqual(tree.Walk()));
+            }
+        }
+
         public static bool BinaryTreePropertyRespected(Node<T> root, T minimumValue = default(T),
             T maximumValue = default(T)) 
         {
