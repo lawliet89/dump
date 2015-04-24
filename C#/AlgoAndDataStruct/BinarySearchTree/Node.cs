@@ -60,6 +60,26 @@ namespace BinarySearchTree
             }
         }
 
+        public T MinimumValue()
+        {
+            return MinimumNode().Value;
+        }
+
+        public Node<T> MinimumNode()
+        {
+            return LeftChild == null ? this : LeftChild.MinimumNode();
+        }
+
+        public T MaximumValue()
+        {
+            return MaximumNode().Value;
+        }
+
+        public Node<T> MaximumNode()
+        {
+            return RightChild == null ? this : RightChild.MaximumNode();
+        }
+
         public override string ToString()
         {
             return Value.ToString();
