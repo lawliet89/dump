@@ -57,6 +57,7 @@ namespace BinarySearchTree.Tests
             {
                 Assert.AreEqual(sortedValues[i + 1], root.Successor(sortedValues[i]));
             }
+            Assert.IsNull(root.SuccessorNode(sortedValues[sortedValues.Length - 1]));
         }
 
         public static bool BinaryTreePropertyRespected(Node<T> root, T minimumValue = default(T),
