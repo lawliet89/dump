@@ -80,6 +80,30 @@ namespace BinarySearchTree
             return RightChild == null ? this : RightChild.MaximumNode();
         }
 
+        public IEnumerable<T> Walk()
+        {
+            return WalkNodes().Select(n => n.Value);
+        }
+
+        public IEnumerable<Node<T>> WalkNodes()
+        {
+            if (LeftChild != null)
+            {
+                foreach (var node in LeftChild.WalkNodes())
+                {
+                    yield return node;
+                }
+            }
+            yield return this;
+            if (RightChild != null)
+            {
+                foreach (var node in RightChild.WalkNodes())
+                {
+                    yield return node;
+                }
+            }
+        } 
+
         public override string ToString()
         {
             return Value.ToString();

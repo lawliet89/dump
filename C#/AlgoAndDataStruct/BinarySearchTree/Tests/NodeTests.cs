@@ -35,6 +35,12 @@ namespace BinarySearchTree.Tests
             Assert.AreEqual(values.Min(), root.MinimumValue());
         }
 
+        [Test]
+        public void NodesAreWalkedInOrder()
+        {
+            Assert.That(values.OrderBy(n => n).SequenceEqual(root.Walk()));
+        }
+
         public static bool BinaryTreePropertyRespected(Node<T> root, T minimumValue = default(T),
             T maximumValue = default(T)) 
         {
